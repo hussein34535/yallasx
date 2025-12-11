@@ -7,8 +7,8 @@ module.exports = async function handler(req, res) {
   // Masking headers to mimic a browser
   const headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    // Use original URL as Referer
-    'Referer': url || key || 'https://wikinew.giokko.ru/'
+    // Use origin as Referer to avoid 500 errors
+    'Referer': new URL(url || key || 'https://wikinew.giokko.ru/').origin + '/'
   };
 
   try {
