@@ -58,6 +58,6 @@ module.exports = async function handler(req, res) {
 
   } catch (error) {
     console.error(error);
-    return res.status(500).send('Error fetching stream');
+    return res.status(500).send('Error fetching stream: ' + error.message);
   }
 }
