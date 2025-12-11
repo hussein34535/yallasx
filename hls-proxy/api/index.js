@@ -4,11 +4,25 @@ module.exports = async function handler(req, res) {
   // 1. Receive URL from request
   const { url, key } = req.query;
 
-  // Masking headers to mimic a browser
+  // 2. Prepare headers
+  const userAgent = req.headers['user-agent'] || 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
+  const customReferer = req.query.referer;
+
+  // Default referer strategy: Try origin, fallback to standard behavior
+  let refererHeader = 'https://wikinew.giokko.ru/';
+  try {
+    if (customReferer) {
+      refererHeader = customReferer;
+    } else if (url) {
+      refererHeader = new URL(url).origin + '/';
+    }
+  } catch (e) {
+    console.error("URL parsing error:", e);
+  }
+
   const headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-    // Use origin as Referer to avoid 500 errors
-    'Referer': new URL(url || key || 'https://wikinew.giokko.ru/').origin + '/'
+    'User-Agent': userAgent,
+    'Referer': refererHeader
   };
 
   try {
